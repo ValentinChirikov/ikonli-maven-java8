@@ -215,6 +215,13 @@ public enum Devicons implements Ikon {
     YII("di-yii", '\ue682'),
     ZEND("di-zend", '\ue678');
 
+    private String description;
+    private char code;
+    Devicons(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
+
     public static Devicons findByDescription(String description) {
         for (Devicons font : values()) {
             if (font.getDescription().equals(description)) {
@@ -222,14 +229,6 @@ public enum Devicons implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Devicons(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override

@@ -6,13 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableIntegerProperty;
-import javafx.css.StyleableObjectProperty;
-import javafx.css.StyleableProperty;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
+import javafx.css.*;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.LinearGradient;
@@ -31,11 +25,10 @@ import static java.util.Objects.requireNonNull;
  * @author Andres Almiray
  */
 public class SVGIcon extends Region implements Icon {
+    private final SVGPath path = new SVGPath();
     protected StyleableIntegerProperty iconSize;
     protected StyleableObjectProperty<Paint> iconColor;
     private StyleableObjectProperty<Ikon> iconCode;
-    private final SVGPath path = new SVGPath();
-
     private ChangeListener<Number> iconSizeChangeListener = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> v, Number o, Number n) {
@@ -72,6 +65,30 @@ public class SVGIcon extends Region implements Icon {
     public SVGIcon(Ikon iconCode) {
         this();
         setIconCode(iconCode);
+    }
+
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+        return StyleableProperties.STYLEABLES;
+    }
+
+    private static Paint resolvePaintValue(String iconCode, String value) {
+        try {
+            return Color.valueOf(value);
+        } catch (IllegalArgumentException e1) {
+            try {
+                return LinearGradient.valueOf(value);
+            } catch (IllegalArgumentException e2) {
+                try {
+                    return RadialGradient.valueOf(value);
+                } catch (IllegalArgumentException e3) {
+                    throw invalidDescription(iconCode, e3);
+                }
+            }
+        }
+    }
+
+    public static IllegalArgumentException invalidDescription(String description, Exception e) {
+        throw new IllegalArgumentException("Description " + description + " is not a valid icon description", e);
     }
 
     public String toString() {
@@ -154,6 +171,11 @@ public class SVGIcon extends Region implements Icon {
     }
 
     @Override
+    public int getIconSize() {
+        return iconSizeProperty().get();
+    }
+
+    @Override
     public void setIconSize(int size) {
         if (size <= 0) {
             throw new IllegalStateException("Argument 'size' must be greater than zero.");
@@ -162,19 +184,14 @@ public class SVGIcon extends Region implements Icon {
     }
 
     @Override
-    public int getIconSize() {
-        return iconSizeProperty().get();
+    public Paint getIconColor() {
+        return iconColorProperty().get();
     }
 
     @Override
     public void setIconColor(Paint paint) {
         requireNonNull(paint, "Argument 'paint' must not be null");
         iconColorProperty().set(paint);
-    }
-
-    @Override
-    public Paint getIconColor() {
-        return iconColorProperty().get();
     }
 
     public Ikon getIconCode() {
@@ -186,78 +203,16 @@ public class SVGIcon extends Region implements Icon {
         path.setContent(SVGGlyphRegistry.getInstance().getSVGContent(iconCode));
     }
 
-    public void setIconLiteral(String iconCode) {
-        String[] parts = iconCode.split(":");
-        setIconCode(IkonResolver.getInstance().resolveIkonHandler(parts[0]).resolve(parts[0]));
-        resolveSize(iconCode, parts);
-        resolvePaint(iconCode, parts);
-    }
-
     public String getIconLiteral() {
         Ikon ikon = iconCodeProperty().get();
         return ikon != null ? ikon.getDescription() : null;
     }
 
-    private static class StyleableProperties {
-        private static final CssMetaData<SVGIcon, Number> ICON_SIZE =
-            new CssMetaData<SVGIcon, Number>("-fx-icon-size",
-                SizeConverter.getInstance(), 16.0) {
-
-                @Override
-                public boolean isSettable(SVGIcon icon) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Number> getStyleableProperty(SVGIcon icon) {
-                    return (StyleableProperty<Number>) icon.iconSizeProperty();
-                }
-            };
-
-        private static final CssMetaData<SVGIcon, Paint> ICON_COLOR =
-            new CssMetaData<SVGIcon, Paint>("-fx-icon-color",
-                PaintConverter.getInstance(), Color.BLACK) {
-
-                @Override
-                public boolean isSettable(SVGIcon node) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Paint> getStyleableProperty(SVGIcon icon) {
-                    return (StyleableProperty<Paint>) icon.iconColorProperty();
-                }
-            };
-
-        private static final CssMetaData<SVGIcon, Ikon> ICON_CODE =
-            new CssMetaData<SVGIcon, Ikon>("-fx-icon-code",
-                SVGIconConverter.getInstance(), null) {
-
-                @Override
-                public boolean isSettable(SVGIcon node) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Ikon> getStyleableProperty(SVGIcon icon) {
-                    return (StyleableProperty<Ikon>) icon.iconCodeProperty();
-                }
-            };
-
-        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
-
-        static {
-            final List<CssMetaData<? extends Styleable, ?>> styleables =
-                new ArrayList<CssMetaData<? extends Styleable, ?>>(Region.getClassCssMetaData());
-            styleables.add(ICON_SIZE);
-            styleables.add(ICON_COLOR);
-            styleables.add(ICON_CODE);
-            STYLEABLES = unmodifiableList(styleables);
-        }
-    }
-
-    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return StyleableProperties.STYLEABLES;
+    public void setIconLiteral(String iconCode) {
+        String[] parts = iconCode.split(":");
+        setIconCode(IkonResolver.getInstance().resolveIkonHandler(parts[0]).resolve(parts[0]));
+        resolveSize(iconCode, parts);
+        resolvePaint(iconCode, parts);
     }
 
     public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
@@ -285,17 +240,61 @@ public class SVGIcon extends Region implements Icon {
         }
     }
 
-    private static Paint resolvePaintValue(String iconCode, String value) {
-        try { return Color.valueOf(value); } catch (IllegalArgumentException e1) {
-            try { return LinearGradient.valueOf(value); } catch (IllegalArgumentException e2) {
-                try { return RadialGradient.valueOf(value); } catch (IllegalArgumentException e3) {
-                    throw invalidDescription(iconCode, e3);
-                }
-            }
-        }
-    }
+    private static class StyleableProperties {
+        private static final CssMetaData<SVGIcon, Number> ICON_SIZE =
+                new CssMetaData<SVGIcon, Number>("-fx-icon-size",
+                        SizeConverter.getInstance(), 16.0) {
 
-    public static IllegalArgumentException invalidDescription(String description, Exception e) {
-        throw new IllegalArgumentException("Description " + description + " is not a valid icon description", e);
+                    @Override
+                    public boolean isSettable(SVGIcon icon) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Number> getStyleableProperty(SVGIcon icon) {
+                        return (StyleableProperty<Number>) icon.iconSizeProperty();
+                    }
+                };
+
+        private static final CssMetaData<SVGIcon, Paint> ICON_COLOR =
+                new CssMetaData<SVGIcon, Paint>("-fx-icon-color",
+                        PaintConverter.getInstance(), Color.BLACK) {
+
+                    @Override
+                    public boolean isSettable(SVGIcon node) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Paint> getStyleableProperty(SVGIcon icon) {
+                        return (StyleableProperty<Paint>) icon.iconColorProperty();
+                    }
+                };
+
+        private static final CssMetaData<SVGIcon, Ikon> ICON_CODE =
+                new CssMetaData<SVGIcon, Ikon>("-fx-icon-code",
+                        SVGIconConverter.getInstance(), null) {
+
+                    @Override
+                    public boolean isSettable(SVGIcon node) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Ikon> getStyleableProperty(SVGIcon icon) {
+                        return (StyleableProperty<Ikon>) icon.iconCodeProperty();
+                    }
+                };
+
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+
+        static {
+            final List<CssMetaData<? extends Styleable, ?>> styleables =
+                    new ArrayList<CssMetaData<? extends Styleable, ?>>(Region.getClassCssMetaData());
+            styleables.add(ICON_SIZE);
+            styleables.add(ICON_COLOR);
+            styleables.add(ICON_CODE);
+            STYLEABLES = unmodifiableList(styleables);
+        }
     }
 }

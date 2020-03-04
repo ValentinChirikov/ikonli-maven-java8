@@ -18,17 +18,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class SVGGlyphRegistry {
     private static final SVGGlyphRegistry INSTANCE;
-    private final Map<String, Map<String, String>> glyphCache = new ConcurrentHashMap<>();
 
     static {
         INSTANCE = new SVGGlyphRegistry();
     }
 
-    public static SVGGlyphRegistry getInstance() {
-        return INSTANCE;
-    }
+    private final Map<String, Map<String, String>> glyphCache = new ConcurrentHashMap<>();
 
     private SVGGlyphRegistry() {
+    }
+
+    public static SVGGlyphRegistry getInstance() {
+        return INSTANCE;
     }
 
     public String getSVGContent(Ikon ikon) {

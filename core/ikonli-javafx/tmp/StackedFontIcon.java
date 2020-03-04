@@ -5,11 +5,7 @@ import com.sun.javafx.css.converters.SizeConverter;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableIntegerProperty;
-import javafx.css.StyleableObjectProperty;
-import javafx.css.StyleableProperty;
+import javafx.css.*;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -31,14 +27,17 @@ public class StackedFontIcon extends StackPane implements Icon {
     private StyleableObjectProperty<Paint> iconColor;
     private ObjectProperty<Ikon[]> iconCodes;
     private ObjectProperty<Number[]> iconSizes;
-
-    private ChangeListener<Number> iconSizeChangeListener = (v, o, n) -> setIconSizeOnChildren(n.intValue());
     private ChangeListener<Paint> iconColorChangeListener = (v, o, n) -> setIconColorOnChildren(n);
     private ChangeListener<Ikon[]> iconCodesChangeListener = (v, o, n) -> updateIconCodes(n);
     private ChangeListener<Number[]> iconSizesChangeListener = (v, o, n) -> updateIconSizes(n);
+    private ChangeListener<Number> iconSizeChangeListener = (v, o, n) -> setIconSizeOnChildren(n.intValue());
 
     public StackedFontIcon() {
         getStyleClass().setAll("stacked-ikonli-font-icon");
+    }
+
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+        return StyleableProperties.STYLEABLES;
     }
 
     public ObjectProperty<Ikon[]> iconCodesProperty() {
@@ -133,6 +132,10 @@ public class StackedFontIcon extends StackPane implements Icon {
         return iconColor;
     }
 
+    public int getIconSize() {
+        return iconSizeProperty().get();
+    }
+
     public void setIconSize(int size) {
         if (size <= 0) {
             throw new IllegalStateException("Argument 'size' must be greater than zero.");
@@ -140,8 +143,8 @@ public class StackedFontIcon extends StackPane implements Icon {
         iconSizeProperty().set(size);
     }
 
-    public int getIconSize() {
-        return iconSizeProperty().get();
+    public Paint getIconColor() {
+        return iconColorProperty().get();
     }
 
     public void setIconColor(Paint paint) {
@@ -149,22 +152,18 @@ public class StackedFontIcon extends StackPane implements Icon {
         iconColorProperty().set(paint);
     }
 
-    public Paint getIconColor() {
-        return iconColorProperty().get();
-    }
-
     public Ikon[] getIconCodes() {
         Ikon[] iconFonts = iconCodesProperty().get();
         return Arrays.copyOf(iconFonts, iconFonts.length);
     }
 
-    public void setIkons(Ikon... iconCodes) {
+    public void setIconCodes(Ikon[] iconCodes) {
         getChildren().clear();
         initializeSizesIfNeeded(iconCodes);
         iconCodesProperty().set(iconCodes);
     }
 
-    public void setIconCodes(Ikon[] iconCodes) {
+    public void setIkons(Ikon... iconCodes) {
         getChildren().clear();
         initializeSizesIfNeeded(iconCodes);
         iconCodesProperty().set(iconCodes);
@@ -208,16 +207,16 @@ public class StackedFontIcon extends StackPane implements Icon {
         return Arrays.copyOf(iconSizes, iconSizes.length);
     }
 
+    public void setIconSizes(Number[] iconSizes) {
+        iconSizesProperty().set(iconSizes);
+    }
+
     public void setSizes(double... iconSizes) {
         Number[] array = new Number[iconSizes.length];
         for (int i = 0; i < array.length; i++) {
             array[i] = iconSizes[i];
         }
         iconSizesProperty().set(array);
-    }
-
-    public void setIconSizes(Number[] iconSizes) {
-        iconSizesProperty().set(iconSizes);
     }
 
     private void updateIconSizes(Number[] iconSizes) {
@@ -232,84 +231,6 @@ public class StackedFontIcon extends StackPane implements Icon {
                 ((Icon) node).setIconColor(iconColors[i++]);
             }
         }
-    }
-
-    private static class StyleableProperties {
-        private static final CssMetaData<StackedFontIcon, Number> ICON_SIZE =
-            new CssMetaData<StackedFontIcon, Number>("-fx-icon-size",
-                SizeConverter.getInstance(), 16.0) {
-
-                @Override
-                public boolean isSettable(StackedFontIcon fontIcon) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Number> getStyleableProperty(StackedFontIcon icon) {
-                    return (StyleableProperty<Number>) icon.iconSizeProperty();
-                }
-            };
-
-        private static final CssMetaData<StackedFontIcon, Paint> ICON_COLOR =
-            new CssMetaData<StackedFontIcon, Paint>("-fx-icon-color",
-                PaintConverter.getInstance(), Color.BLACK) {
-
-                @Override
-                public boolean isSettable(StackedFontIcon node) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Paint> getStyleableProperty(StackedFontIcon icon) {
-                    return (StyleableProperty<Paint>) icon.iconColorProperty();
-                }
-            };
-
-        private static final CssMetaData<StackedFontIcon, Ikon[]> ICON_CODES =
-            new CssMetaData<StackedFontIcon, Ikon[]>("-fx-icon-codes",
-                FontIconConverter.SequenceConverter.getInstance(), null) {
-
-                @Override
-                public boolean isSettable(StackedFontIcon node) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Ikon[]> getStyleableProperty(StackedFontIcon icon) {
-                    return (StyleableProperty<Ikon[]>) icon.iconCodesProperty();
-                }
-            };
-
-        private static final CssMetaData<StackedFontIcon, Number[]> ICON_SIZES =
-            new CssMetaData<StackedFontIcon, Number[]>("-fx-icon-sizes",
-                SizeConverter.SequenceConverter.getInstance(), null) {
-
-                @Override
-                public boolean isSettable(StackedFontIcon node) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Number[]> getStyleableProperty(StackedFontIcon icon) {
-                    return (StyleableProperty<Number[]>) icon.iconSizesProperty();
-                }
-            };
-
-        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
-
-        static {
-            final List<CssMetaData<? extends Styleable, ?>> styleables =
-                new ArrayList<CssMetaData<? extends Styleable, ?>>(StackPane.getClassCssMetaData());
-            styleables.add(ICON_SIZE);
-            styleables.add(ICON_COLOR);
-            styleables.add(ICON_CODES);
-            styleables.add(ICON_SIZES);
-            STYLEABLES = unmodifiableList(styleables);
-        }
-    }
-
-    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return StyleableProperties.STYLEABLES;
     }
 
     public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
@@ -336,6 +257,80 @@ public class StackedFontIcon extends StackPane implements Icon {
             if (node instanceof Icon) {
                 ((Icon) node).setIconColor(color);
             }
+        }
+    }
+
+    private static class StyleableProperties {
+        private static final CssMetaData<StackedFontIcon, Number> ICON_SIZE =
+                new CssMetaData<StackedFontIcon, Number>("-fx-icon-size",
+                        SizeConverter.getInstance(), 16.0) {
+
+                    @Override
+                    public boolean isSettable(StackedFontIcon fontIcon) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Number> getStyleableProperty(StackedFontIcon icon) {
+                        return (StyleableProperty<Number>) icon.iconSizeProperty();
+                    }
+                };
+
+        private static final CssMetaData<StackedFontIcon, Paint> ICON_COLOR =
+                new CssMetaData<StackedFontIcon, Paint>("-fx-icon-color",
+                        PaintConverter.getInstance(), Color.BLACK) {
+
+                    @Override
+                    public boolean isSettable(StackedFontIcon node) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Paint> getStyleableProperty(StackedFontIcon icon) {
+                        return (StyleableProperty<Paint>) icon.iconColorProperty();
+                    }
+                };
+
+        private static final CssMetaData<StackedFontIcon, Ikon[]> ICON_CODES =
+                new CssMetaData<StackedFontIcon, Ikon[]>("-fx-icon-codes",
+                        FontIconConverter.SequenceConverter.getInstance(), null) {
+
+                    @Override
+                    public boolean isSettable(StackedFontIcon node) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Ikon[]> getStyleableProperty(StackedFontIcon icon) {
+                        return (StyleableProperty<Ikon[]>) icon.iconCodesProperty();
+                    }
+                };
+
+        private static final CssMetaData<StackedFontIcon, Number[]> ICON_SIZES =
+                new CssMetaData<StackedFontIcon, Number[]>("-fx-icon-sizes",
+                        SizeConverter.SequenceConverter.getInstance(), null) {
+
+                    @Override
+                    public boolean isSettable(StackedFontIcon node) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Number[]> getStyleableProperty(StackedFontIcon icon) {
+                        return (StyleableProperty<Number[]>) icon.iconSizesProperty();
+                    }
+                };
+
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+
+        static {
+            final List<CssMetaData<? extends Styleable, ?>> styleables =
+                    new ArrayList<CssMetaData<? extends Styleable, ?>>(StackPane.getClassCssMetaData());
+            styleables.add(ICON_SIZE);
+            styleables.add(ICON_COLOR);
+            styleables.add(ICON_CODES);
+            styleables.add(ICON_SIZES);
+            STYLEABLES = unmodifiableList(styleables);
         }
     }
 }

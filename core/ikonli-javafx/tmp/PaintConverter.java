@@ -13,6 +13,10 @@ import java.lang.reflect.Method;
 public class PaintConverter extends StyleConverter<ParsedValue<?, Paint>, Paint> {
     private final StyleConverter<ParsedValue<?, Paint>, Paint> delegate;
 
+    private PaintConverter(StyleConverter<ParsedValue<?, Paint>, Paint> delegate) {
+        this.delegate = delegate;
+    }
+
     public static PaintConverter getInstance() {
 
         ClassLoader classLoader = PaintConverter.class.getClassLoader();
@@ -36,10 +40,6 @@ public class PaintConverter extends StyleConverter<ParsedValue<?, Paint>, Paint>
         } catch (Exception e) {
             throw new IllegalStateException("Unnexpected error while grabbing instance from " + converterClass.getName(), e);
         }
-    }
-
-    private PaintConverter(StyleConverter<ParsedValue<?, Paint>, Paint> delegate) {
-        this.delegate = delegate;
     }
 
     @Override

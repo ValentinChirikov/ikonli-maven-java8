@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kordamp.ikonli</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0-8</version>
+
+    <packaging>pom</packaging>
+    <name>Parent project</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>11</java.version>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.release>8</maven.compiler.release>
+    </properties>
+
+    <modules>
+        <module>core/ikonli-core</module>
+        <module>core/ikonli-swing</module>
+        <module>core/ikonli-javafx</module>
+        <module>icon-packs/ikonli-dashicons-pack</module>
+        <module>icon-packs/ikonli-devicons-pack</module>
+        <module>icon-packs/ikonli-elusive-pack</module>
+        <module>icon-packs/ikonli-entypo-pack</module>
+        <module>icon-packs/ikonli-feather-pack</module>
+        <module>icon-packs/ikonli-fontawesome-pack</module>
+        <module>icon-packs/ikonli-fontawesome5-pack</module>
+        <module>icon-packs/ikonli-fontelico-pack</module>
+        <module>icon-packs/ikonli-foundation-pack</module>
+        <module>icon-packs/ikonli-hawconsfilled-pack</module>
+        <module>icon-packs/ikonli-hawconsstroke-pack</module>
+        <module>icon-packs/ikonli-icomoon-pack</module>
+        <module>icon-packs/ikonli-ionicons-pack</module>
+        <module>icon-packs/ikonli-ionicons4-pack</module>
+        <module>icon-packs/ikonli-ligaturesymbols-pack</module>
+        <module>icon-packs/ikonli-linecons-pack</module>
+        <module>icon-packs/ikonli-maki-pack</module>
+        <module>icon-packs/ikonli-maki2-pack</module>
+        <module>icon-packs/ikonli-mapicons-pack</module>
+        <module>icon-packs/ikonli-material-pack</module>
+        <module>icon-packs/ikonli-materialdesign-pack</module>
+        <module>icon-packs/ikonli-metrizeicons-pack</module>
+        <module>icon-packs/ikonli-octicons-pack</module>
+        <module>icon-packs/ikonli-openiconic-pack</module>
+        <module>icon-packs/ikonli-paymentfont-pack</module>
+        <module>icon-packs/ikonli-runestroicons-pack</module>
+        <module>icon-packs/ikonli-themify-pack</module>
+        <module>icon-packs/ikonli-typicons-pack</module>
+        <module>icon-packs/ikonli-weathericons-pack</module>
+        <module>icon-packs/ikonli-websymbols-pack</module>
+        <module>icon-packs/ikonli-zondicons-pack</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -21,7 +21,14 @@ package org.kordamp.ikonli;
  * @author Andres Almiray
  */
 public enum Ikonli implements Ikon {
-    NONE("ikn-none",'\ue600');
+    NONE("ikn-none", '\ue600');
+
+    private String description;
+    private char code;
+    Ikonli(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
 
     public static Ikonli findByDescription(String description) {
         for (Ikonli font : values()) {
@@ -30,14 +37,6 @@ public enum Ikonli implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Ikonli(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override

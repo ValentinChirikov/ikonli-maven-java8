@@ -19,11 +19,7 @@ package org.kordamp.ikonli.javafx;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableIntegerProperty;
-import javafx.css.StyleableObjectProperty;
-import javafx.css.StyleableProperty;
+import javafx.css.*;
 import javafx.css.converter.PaintConverter;
 import javafx.css.converter.SizeConverter;
 import javafx.scene.paint.Color;
@@ -49,26 +45,6 @@ public class FontIcon extends Text implements Icon {
     protected StyleableIntegerProperty iconSize;
     protected StyleableObjectProperty<Paint> iconColor;
     private StyleableObjectProperty<Ikon> iconCode;
-
-    public static FontIcon of(Ikon ikon) {
-        return of(ikon, 8, Color.BLACK);
-    }
-
-    public static FontIcon of(Ikon ikon, int iconSize) {
-        return of(ikon, iconSize, Color.BLACK);
-    }
-
-    public static FontIcon of(Ikon ikon, Color iconColor) {
-        return of(ikon, 8, iconColor);
-    }
-
-    public static FontIcon of(Ikon iconCode, int iconSize, Color iconColor) {
-        FontIcon icon = new FontIcon();
-        icon.setIconCode(iconCode);
-        icon.setIconSize(iconSize);
-        icon.setIconColor(iconColor);
-        return icon;
-    }
 
     public FontIcon() {
         getStyleClass().setAll("ikonli-font-icon");
@@ -106,6 +82,50 @@ public class FontIcon extends Text implements Icon {
     public FontIcon(Ikon iconCode) {
         this();
         setIconCode(iconCode);
+    }
+
+    public static FontIcon of(Ikon ikon) {
+        return of(ikon, 8, Color.BLACK);
+    }
+
+    public static FontIcon of(Ikon ikon, int iconSize) {
+        return of(ikon, iconSize, Color.BLACK);
+    }
+
+    public static FontIcon of(Ikon ikon, Color iconColor) {
+        return of(ikon, 8, iconColor);
+    }
+
+    public static FontIcon of(Ikon iconCode, int iconSize, Color iconColor) {
+        FontIcon icon = new FontIcon();
+        icon.setIconCode(iconCode);
+        icon.setIconSize(iconSize);
+        icon.setIconColor(iconColor);
+        return icon;
+    }
+
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+        return StyleableProperties.STYLEABLES;
+    }
+
+    private static Paint resolvePaintValue(String iconCode, String value) {
+        try {
+            return Color.valueOf(value);
+        } catch (IllegalArgumentException e1) {
+            try {
+                return LinearGradient.valueOf(value);
+            } catch (IllegalArgumentException e2) {
+                try {
+                    return RadialGradient.valueOf(value);
+                } catch (IllegalArgumentException e3) {
+                    throw invalidDescription(iconCode, e3);
+                }
+            }
+        }
+    }
+
+    public static IllegalArgumentException invalidDescription(String description, Exception e) {
+        throw new IllegalArgumentException("Description " + description + " is not a valid icon description", e);
     }
 
     public String toString() {
@@ -194,6 +214,11 @@ public class FontIcon extends Text implements Icon {
     }
 
     @Override
+    public int getIconSize() {
+        return iconSizeProperty().get();
+    }
+
+    @Override
     public void setIconSize(int size) {
         if (size <= 0) {
             throw new IllegalStateException("Argument 'size' must be greater than zero.");
@@ -202,18 +227,13 @@ public class FontIcon extends Text implements Icon {
     }
 
     @Override
-    public int getIconSize() {
-        return iconSizeProperty().get();
+    public Paint getIconColor() {
+        return iconColorProperty().get();
     }
 
     @Override
     public void setIconColor(Paint paint) {
         iconColorProperty().set(requireNonNull(paint, "Argument 'paint' must not be null"));
-    }
-
-    @Override
-    public Paint getIconColor() {
-        return iconColorProperty().get();
     }
 
     public Ikon getIconCode() {
@@ -234,78 +254,16 @@ public class FontIcon extends Text implements Icon {
         return style + key + ": " + value + ";";
     }
 
-    public void setIconLiteral(String iconCode) {
-        String[] parts = iconCode.split(":");
-        setIconCode(org.kordamp.ikonli.javafx.IkonResolver.getInstance().resolveIkonHandler(parts[0]).resolve(parts[0]));
-        resolveSize(iconCode, parts);
-        resolvePaint(iconCode, parts);
-    }
-
     public String getIconLiteral() {
         Ikon ikon = iconCodeProperty().get();
         return ikon != null ? ikon.getDescription() : null;
     }
 
-    private static class StyleableProperties {
-        private static final CssMetaData<FontIcon, Number> ICON_SIZE =
-            new CssMetaData<FontIcon, Number>("-fx-icon-size",
-                SizeConverter.getInstance(), 8) {
-
-                @Override
-                public boolean isSettable(FontIcon icon) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Number> getStyleableProperty(FontIcon icon) {
-                    return (StyleableProperty<Number>) icon.iconSizeProperty();
-                }
-            };
-
-        private static final CssMetaData<FontIcon, Paint> ICON_COLOR =
-            new CssMetaData<FontIcon, Paint>("-fx-icon-color",
-                PaintConverter.getInstance(), Color.BLACK) {
-
-                @Override
-                public boolean isSettable(FontIcon node) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Paint> getStyleableProperty(FontIcon icon) {
-                    return (StyleableProperty<Paint>) icon.iconColorProperty();
-                }
-            };
-
-        private static final CssMetaData<FontIcon, Ikon> ICON_CODE =
-            new CssMetaData<FontIcon, Ikon>("-fx-icon-code",
-                FontIconConverter.getInstance(), null) {
-
-                @Override
-                public boolean isSettable(FontIcon node) {
-                    return true;
-                }
-
-                @Override
-                public StyleableProperty<Ikon> getStyleableProperty(FontIcon icon) {
-                    return (StyleableProperty<Ikon>) icon.iconCodeProperty();
-                }
-            };
-
-        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
-
-        static {
-            final List<CssMetaData<? extends Styleable, ?>> styleables =
-                new ArrayList<>(Text.getClassCssMetaData());
-            styleables.add(ICON_SIZE);
-            styleables.add(ICON_COLOR);
-            styleables.add(ICON_CODE);
-            STYLEABLES = unmodifiableList(styleables);
-        }
-    }
-
-    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return StyleableProperties.STYLEABLES;
+    public void setIconLiteral(String iconCode) {
+        String[] parts = iconCode.split(":");
+        setIconCode(org.kordamp.ikonli.javafx.IkonResolver.getInstance().resolveIkonHandler(parts[0]).resolve(parts[0]));
+        resolveSize(iconCode, parts);
+        resolvePaint(iconCode, parts);
     }
 
     public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
@@ -331,17 +289,61 @@ public class FontIcon extends Text implements Icon {
         }
     }
 
-    private static Paint resolvePaintValue(String iconCode, String value) {
-        try { return Color.valueOf(value); } catch (IllegalArgumentException e1) {
-            try { return LinearGradient.valueOf(value); } catch (IllegalArgumentException e2) {
-                try { return RadialGradient.valueOf(value); } catch (IllegalArgumentException e3) {
-                    throw invalidDescription(iconCode, e3);
-                }
-            }
-        }
-    }
+    private static class StyleableProperties {
+        private static final CssMetaData<FontIcon, Number> ICON_SIZE =
+                new CssMetaData<FontIcon, Number>("-fx-icon-size",
+                        SizeConverter.getInstance(), 8) {
 
-    public static IllegalArgumentException invalidDescription(String description, Exception e) {
-        throw new IllegalArgumentException("Description " + description + " is not a valid icon description", e);
+                    @Override
+                    public boolean isSettable(FontIcon icon) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Number> getStyleableProperty(FontIcon icon) {
+                        return (StyleableProperty<Number>) icon.iconSizeProperty();
+                    }
+                };
+
+        private static final CssMetaData<FontIcon, Paint> ICON_COLOR =
+                new CssMetaData<FontIcon, Paint>("-fx-icon-color",
+                        PaintConverter.getInstance(), Color.BLACK) {
+
+                    @Override
+                    public boolean isSettable(FontIcon node) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Paint> getStyleableProperty(FontIcon icon) {
+                        return (StyleableProperty<Paint>) icon.iconColorProperty();
+                    }
+                };
+
+        private static final CssMetaData<FontIcon, Ikon> ICON_CODE =
+                new CssMetaData<FontIcon, Ikon>("-fx-icon-code",
+                        FontIconConverter.getInstance(), null) {
+
+                    @Override
+                    public boolean isSettable(FontIcon node) {
+                        return true;
+                    }
+
+                    @Override
+                    public StyleableProperty<Ikon> getStyleableProperty(FontIcon icon) {
+                        return (StyleableProperty<Ikon>) icon.iconCodeProperty();
+                    }
+                };
+
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+
+        static {
+            final List<CssMetaData<? extends Styleable, ?>> styleables =
+                    new ArrayList<>(Text.getClassCssMetaData());
+            styleables.add(ICON_SIZE);
+            styleables.add(ICON_COLOR);
+            styleables.add(ICON_CODE);
+            STYLEABLES = unmodifiableList(styleables);
+        }
     }
 }

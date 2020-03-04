@@ -59,16 +59,12 @@ import org.kordamp.ikonli.Ikon;
  * @author Andres Almiray
  */
 public class SVGIconConverter extends StyleConverter<String, Ikon> {
-    private static class Holder {
-        static final SVGIconConverter INSTANCE = new SVGIconConverter();
+    private SVGIconConverter() {
+
     }
 
     public static StyleConverter<String, Ikon> getInstance() {
         return Holder.INSTANCE;
-    }
-
-    private SVGIconConverter() {
-
     }
 
     @Override
@@ -80,5 +76,9 @@ public class SVGIconConverter extends StyleConverter<String, Ikon> {
     public Ikon convert(ParsedValue<String, Ikon> value, Font font) {
         String description = value.getValue().trim();
         return IkonResolver.getInstance().resolveIkonHandler(description).resolve(description);
+    }
+
+    private static class Holder {
+        static final SVGIconConverter INSTANCE = new SVGIconConverter();
     }
 }

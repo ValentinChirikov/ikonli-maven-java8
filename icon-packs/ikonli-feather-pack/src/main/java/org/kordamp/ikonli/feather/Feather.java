@@ -155,6 +155,13 @@ public enum Feather implements Ikon {
     FTH_ZOOM_IN("fth-zoom-in", '\ue037'),
     FTH_ZOOM_OUT("fth-zoom-out", '\ue038');
 
+    private String description;
+    private char code;
+    Feather(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
+
     public static Feather findByDescription(String description) {
         for (Feather font : values()) {
             if (font.getDescription().equals(description)) {
@@ -162,14 +169,6 @@ public enum Feather implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Feather(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override

@@ -196,6 +196,13 @@ public enum Octicons implements Ikon {
     X("oct-x", '\uf081'),
     ZAP("oct-zap", '\u26a1');
 
+    private String description;
+    private char code;
+    Octicons(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
+
     public static Octicons findByDescription(String description) {
         for (Octicons font : values()) {
             if (font.getDescription().equals(description)) {
@@ -203,14 +210,6 @@ public enum Octicons implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Octicons(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override

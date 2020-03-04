@@ -253,6 +253,13 @@ public enum Maki2 implements Ikon {
     ZOO_11("maki2-zoo-11", '\ue9e5'),
     ZOO_15("maki2-zoo-15", '\ue9e6');
 
+    private String description;
+    private char code;
+    Maki2(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
+
     public static Maki2 findByDescription(String description) {
         for (Maki2 font : values()) {
             if (font.getDescription().equals(description)) {
@@ -260,14 +267,6 @@ public enum Maki2 implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Maki2(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override

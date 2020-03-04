@@ -307,6 +307,13 @@ public enum Foundation implements Ikon {
     ZOOM_IN("fi-zoom-in", '\uf219'),
     ZOOM_OUT("fi-zoom-out", '\uf21a');
 
+    private String description;
+    private char code;
+    Foundation(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
+
     public static Foundation findByDescription(String description) {
         for (Foundation font : values()) {
             if (font.getDescription().equals(description)) {
@@ -314,14 +321,6 @@ public enum Foundation implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Foundation(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override

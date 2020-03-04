@@ -322,6 +322,13 @@ public enum Zondicons implements Ikon {
     ZOOM_IN("zondi-zoom-in", '\ue901'),
     ZOOM_OUT("zondi-zoom-out", '\ue900');
 
+    private String description;
+    private char code;
+    Zondicons(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
+
     public static Zondicons findByDescription(String description) {
         for (Zondicons font : values()) {
             if (font.getDescription().equals(description)) {
@@ -329,14 +336,6 @@ public enum Zondicons implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Zondicons(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override

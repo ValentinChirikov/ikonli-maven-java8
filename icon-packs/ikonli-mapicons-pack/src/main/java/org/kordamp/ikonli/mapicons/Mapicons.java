@@ -199,6 +199,13 @@ public enum Mapicons implements Ikon {
     ZOOM_OUT("map-icon-zoom-out", '\ue8ae'),
     ZOOM_OUT_ALT("map-icon-zoom-out-alt", '\ue8ad');
 
+    private String description;
+    private char code;
+    Mapicons(String description, char code) {
+        this.description = description;
+        this.code = code;
+    }
+
     public static Mapicons findByDescription(String description) {
         for (Mapicons font : values()) {
             if (font.getDescription().equals(description)) {
@@ -206,14 +213,6 @@ public enum Mapicons implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-    }
-
-    private String description;
-    private char code;
-
-    Mapicons(String description, char code) {
-        this.description = description;
-        this.code = code;
     }
 
     @Override
@@ -225,4 +224,4 @@ public enum Mapicons implements Ikon {
     public char getCode() {
         return code;
     }
-    }
+}
