@@ -87,13 +87,6 @@ public enum Maki implements Ikon {
     TREE_2("maki-tree-2", '\ue83f'),
     WAREHOUSE("maki-warehouse", '\ue840');
 
-    private String description;
-    private char code;
-    Maki(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Maki findByDescription(String description) {
         for (Maki font : values()) {
             if (font.getDescription().equals(description)) {
@@ -101,6 +94,14 @@ public enum Maki implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Maki(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override

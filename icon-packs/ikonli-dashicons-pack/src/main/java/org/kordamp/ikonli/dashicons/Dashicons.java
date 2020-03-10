@@ -280,13 +280,6 @@ public enum Dashicons implements Ikon {
     YES("dashicons-yes", '\uf147'),
     YES_ALT("dashicons-yes-alt", '\uf12a');
 
-    private String description;
-    private char code;
-    Dashicons(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Dashicons findByDescription(String description) {
         for (Dashicons font : values()) {
             if (font.getDescription().equals(description)) {
@@ -294,6 +287,14 @@ public enum Dashicons implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Dashicons(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override

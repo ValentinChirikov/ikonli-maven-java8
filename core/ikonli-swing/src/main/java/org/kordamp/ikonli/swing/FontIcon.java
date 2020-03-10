@@ -20,8 +20,13 @@ package org.kordamp.ikonli.swing;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.IkonHandler;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
@@ -32,10 +37,12 @@ import static java.util.Objects.requireNonNull;
  */
 public class FontIcon implements Icon {
     private static final Object LOCK = new Object[0];
-    transient Image buffer;
+
     private Font font;
     private int width = 8;
     private int height = 8;
+    private BufferedImage buffer;
+
     private int iconSize = 8;
     private Color iconColor = Color.BLACK;
     private Ikon ikon;
@@ -60,37 +67,27 @@ public class FontIcon implements Icon {
         return icon;
     }
 
-    private void makeImage() {
-        if (buffer == null) {
-            buffer = new BufferedImage(getIconWidth(), getIconHeight(),
-                    BufferedImage.TYPE_INT_ARGB);
-
-            Graphics2D g2 = (Graphics2D) buffer.getGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-
-            g2.setFont(font);
-            g2.setColor(iconColor);
-
-            int sy = g2.getFontMetrics().getAscent();
-            g2.drawString(String.valueOf(ikon.getCode()), 0, sy);
-
-            g2.dispose();
-        }
-    }
-
     public void paintIcon(Component c, Graphics g, int x, int y) {
         synchronized (LOCK) {
-            makeImage();
+            if (buffer == null) {
+                buffer = new BufferedImage(getIconWidth(), getIconHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+
+                Graphics2D g2 = (Graphics2D) buffer.getGraphics();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setFont(font);
+                g2.setColor(iconColor);
+
+                int sy = g2.getFontMetrics().getAscent();
+                g2.drawString(String.valueOf(ikon.getCode()), 0, sy);
+
+                g2.dispose();
+            }
+
             g.drawImage(buffer, x, y, null);
         }
-    }
-
-    public Image getImage() {
-        synchronized (LOCK) {
-            makeImage();
-        }
-        return buffer;
     }
 
     public Ikon getIkon() {
@@ -123,7 +120,7 @@ public class FontIcon implements Icon {
 
     protected void setProperties() {
         BufferedImage tmp = new BufferedImage(iconSize, iconSize,
-                BufferedImage.TYPE_INT_ARGB);
+            BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = getLocalGraphicsEnvironment().createGraphics(tmp);
         g2.setFont(font);
         this.width = g2.getFontMetrics().charWidth(ikon.getCode());

@@ -758,13 +758,6 @@ public enum Ionicons implements Ikon {
     ION_WRENCH("ion-wrench", '\uf2ba'),
     ION_XBOX("ion-xbox", '\uf30c');
 
-    private String description;
-    private char code;
-    Ionicons(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Ionicons findByDescription(String description) {
         for (Ionicons font : values()) {
             if (font.getDescription().equals(description)) {
@@ -772,6 +765,14 @@ public enum Ionicons implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Ionicons(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override

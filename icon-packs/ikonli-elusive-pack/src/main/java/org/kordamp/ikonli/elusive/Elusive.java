@@ -324,13 +324,6 @@ public enum Elusive implements Ikon {
     ZOOM_IN("eli-zoom-in", '\ue601'),
     ZOOM_OUT("eli-zoom-out", '\ue600');
 
-    private String description;
-    private char code;
-    Elusive(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Elusive findByDescription(String description) {
         for (Elusive font : values()) {
             if (font.getDescription().equals(description)) {
@@ -338,6 +331,14 @@ public enum Elusive implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Elusive(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override

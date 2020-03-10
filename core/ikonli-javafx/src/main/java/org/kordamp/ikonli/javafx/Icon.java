@@ -30,11 +30,11 @@ public interface Icon extends Styleable {
 
     ObjectProperty<Paint> iconColorProperty();
 
-    int getIconSize();
-
     void setIconSize(int size);
 
-    Paint getIconColor();
+    int getIconSize();
 
     void setIconColor(Paint paint);
+
+    Paint getIconColor();
 }
