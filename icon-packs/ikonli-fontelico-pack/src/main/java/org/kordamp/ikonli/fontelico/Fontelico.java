@@ -58,13 +58,6 @@ public enum Fontelico implements Ikon {
     CROWN_MINUS("ftl-crown-minus", '\ue846'),
     MARQUEE("ftl-marquee", '\ue847');
 
-    private String description;
-    private char code;
-    Fontelico(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Fontelico findByDescription(String description) {
         for (Fontelico font : values()) {
             if (font.getDescription().equals(description)) {
@@ -72,6 +65,14 @@ public enum Fontelico implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Fontelico(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override

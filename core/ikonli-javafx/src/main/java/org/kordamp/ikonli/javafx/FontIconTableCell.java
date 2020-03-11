@@ -32,9 +32,19 @@ import static java.util.Objects.requireNonNull;
 
 public class FontIconTableCell<S, T> extends TableCell<S, T> {
     private static final String ERROR_CONVERTER_NULL = "Argument 'converter' must not be null";
+
+    public static <S, T> Callback<TableColumn<S, T>, TableCell<S, T>> forTableColumn() {
+        return param -> new FontIconTableCell<S, T>();
+    }
+
+    public static <S, T> Callback<TableColumn<S, T>, TableCell<S, T>> forTableColumn(StringConverter<T> converter) {
+        return param -> new FontIconTableCell<S, T>(converter);
+    }
+
+    private Subscription subscription;
     private final FontIcon icon;
     private final ObjectProperty<StringConverter<T>> converter = new SimpleObjectProperty<StringConverter<T>>(this, "converter");
-    private Subscription subscription;
+
     @SuppressWarnings("unchecked")
     public FontIconTableCell() {
         this(new StringConverter<T>() {
@@ -50,30 +60,23 @@ public class FontIconTableCell<S, T> extends TableCell<S, T> {
             }
         });
     }
+
     public FontIconTableCell(StringConverter<T> converter) {
         this.getStyleClass().add("font-icon-table-cell");
         this.icon = new FontIcon();
         setConverter(requireNonNull(converter, ERROR_CONVERTER_NULL));
     }
 
-    public static <S, T> Callback<TableColumn<S, T>, TableCell<S, T>> forTableColumn() {
-        return param -> new FontIconTableCell<S, T>();
-    }
-
-    public static <S, T> Callback<TableColumn<S, T>, TableCell<S, T>> forTableColumn(StringConverter<T> converter) {
-        return param -> new FontIconTableCell<S, T>(converter);
-    }
-
     public final ObjectProperty<StringConverter<T>> converterProperty() {
         return converter;
     }
 
-    public final StringConverter<T> getConverter() {
-        return converterProperty().get();
-    }
-
     public final void setConverter(StringConverter<T> converter) {
         converterProperty().set(requireNonNull(converter, ERROR_CONVERTER_NULL));
+    }
+
+    public final StringConverter<T> getConverter() {
+        return converterProperty().get();
     }
 
     @Override

@@ -26,12 +26,17 @@ import org.kordamp.ikonli.Ikon;
  * @author Andres Almiray
  */
 public class FontIconConverter extends StyleConverter<String, Ikon> {
-    private FontIconConverter() {
-
+    private static class Holder {
+        static final FontIconConverter INSTANCE = new FontIconConverter();
+        static final SequenceConverter SEQUENCE_INSTANCE = new SequenceConverter();
     }
 
     public static StyleConverter<String, Ikon> getInstance() {
         return Holder.INSTANCE;
+    }
+
+    private FontIconConverter() {
+
     }
 
     @Override
@@ -45,18 +50,13 @@ public class FontIconConverter extends StyleConverter<String, Ikon> {
         return IkonResolver.getInstance().resolveIkonHandler(description).resolve(description);
     }
 
-    private static class Holder {
-        static final FontIconConverter INSTANCE = new FontIconConverter();
-        static final SequenceConverter SEQUENCE_INSTANCE = new SequenceConverter();
-    }
-
     public static final class SequenceConverter extends StyleConverter<String, Ikon[]> {
-        private SequenceConverter() {
-            super();
-        }
-
         public static SequenceConverter getInstance() {
             return Holder.SEQUENCE_INSTANCE;
+        }
+
+        private SequenceConverter() {
+            super();
         }
 
         @Override

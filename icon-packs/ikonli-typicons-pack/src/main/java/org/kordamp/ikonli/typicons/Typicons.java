@@ -361,13 +361,6 @@ public enum Typicons implements Ikon {
     ZOOM_OUTLINE("typ-zoom-outline", '\ue14e'),
     ZOOM_OUT_OUTLINE("typ-zoom-out-outline", '\ue14c');
 
-    private String description;
-    private char code;
-    Typicons(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Typicons findByDescription(String description) {
         for (Typicons font : values()) {
             if (font.getDescription().equals(description)) {
@@ -375,6 +368,14 @@ public enum Typicons implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Typicons(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override

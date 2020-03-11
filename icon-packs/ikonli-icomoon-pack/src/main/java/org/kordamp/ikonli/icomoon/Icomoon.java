@@ -516,13 +516,6 @@ public enum Icomoon implements Ikon {
     ICM_ZOOM_IN("icm-zoom-in", '\ue987'),
     ICM_ZOOM_OUT("icm-zoom-out", '\ue988');
 
-    private String description;
-    private char code;
-    Icomoon(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Icomoon findByDescription(String description) {
         for (Icomoon font : values()) {
             if (font.getDescription().equals(description)) {
@@ -530,6 +523,14 @@ public enum Icomoon implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Icomoon(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override

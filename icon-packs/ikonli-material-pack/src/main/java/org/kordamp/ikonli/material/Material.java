@@ -956,13 +956,6 @@ public enum Material implements Ikon {
     ZOOM_OUT("gmi-zoom-out", '\ue900'),
     ZOOM_OUT_MAP("gmi-zoom-out-map", '\ue56B');
 
-    private String description;
-    private char code;
-    Material(String description, char code) {
-        this.description = description;
-        this.code = code;
-    }
-
     public static Material findByDescription(String description) {
         for (Material font : values()) {
             if (font.getDescription().equals(description)) {
@@ -970,6 +963,14 @@ public enum Material implements Ikon {
             }
         }
         throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
+    }
+
+    private String description;
+    private char code;
+
+    Material(String description, char code) {
+        this.description = description;
+        this.code = code;
     }
 
     @Override
