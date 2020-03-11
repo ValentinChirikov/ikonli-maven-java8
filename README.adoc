@@ -4,7 +4,7 @@
 :project-repo:    maven
 :project-name:    ikonli
 :project-group:   org.kordamp.ikonli
-:project-version: 11.3.5-8
+:project-version: 11.3.5-9
 
 image:https://img.shields.io/badge/license-ASL2-blue.svg?logo=apache["ASL2 Licensed", link="http://opensource.org/licenses/ASL2"]
 image:https://img.shields.io/badge/donations-Patreon-f96854.svg?logo=patreon[link="https://www.patreon.com/user?u=6609318"]
